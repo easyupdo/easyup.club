@@ -14,46 +14,54 @@ tags: js , nodejs
 
 ### N-API
 ``` c++
-// 首先要引用 node_api.h
+// hello.cc using N-API
 #include <node_api.h>
+#include <iostream>
 
-// 定义native方法 SayHello 打印一个字符串"Hello"
-napi_value SayHello(napi_env env, napi_callback_info info) {
-  printf("Hello\n");
-  return nullptr;
+namespace demo {
+
+napi_value Method(napi_env env, napi_callback_info args) {
+  //napi_value greeting;
+  //napi_status status;
+
+  //status = napi_create_string_utf8(env, "world", NAPI_AUTO_LENGTH, &greeting);
+  //if (status != napi_ok) return nullptr;
+    //std::cout<<greeting<<std::endl;
+    std::cout<<"N-API test"<<std::endl;
+  //return greeting;
 }
-// 如果把hello.cc看做js文件，则Init 方法的作用就是初始化当前module。
-// 但是Init方法不能修改module，只能修改module的exports。
-// env :当前javascript的上下文文件
-// exports : 即可看做当前文件的model.exports，初始化之前是一个空对象。
-napi_value Init(napi_env env, napi_value exports) {
+
+napi_value init(napi_env env, napi_value exports) {
   napi_status status;
   napi_value fn;
 
-// 将上面的SayHello 方法生成一个可供javascript调用的napi_value对象。
-// 并且赋值给指针 fn。
-// status 为是否生成成功的状态值 ，若成功则值为 napi_ok。
-  status =  napi_create_function(env, nullptr, 0, SayHello, nullptr, &fn);
+  status = napi_create_function(env, nullptr, 0, Method, nullptr, &fn);
   if (status != napi_ok) return nullptr;
 
-// 将刚才生成的javascript 对象方法fn 添加到exports中，属性名为sayHello
-// 翻译为javascript代码为：exports.sayHello = fn;
-  status = napi_set_named_property(env, exports, "sayHello", fn);
+  status = napi_set_named_property(env, exports, "H", fn);
   if (status != napi_ok) return nullptr;
 
- // 后将exports 返回 完成module的初始化
+
+  uint32_t result;
+  status = napi_get_version(env,&result);
+
+  std::cout<<"status:"<<status<<std::endl;
+  std::cout<<"version:"<<result<<std::endl;
+
+
   return exports;
 }
 
-// 注册当前module
-NAPI_MODULE(NODE_GYP_MODULE_NAME, Init)
+NAPI_MODULE(NODE_GYP_MODULE_NAME, init)
+
+}  // namespace demo
 ```
 
 <!--more-->
 
-#### nodejs module系统
+#### nodejs module系统(require)
 ```c++
-//直接导出对象 引用该模块的代码不需要使用new初始化 可以直接使用.
+//直接导出对象 引用该模块的代码不需要使用new初始化(实例化后的对象) 可以直接使用.
 module.exports = {}// nodejs的模块公共访问的接口
 module.exports = {
     "name":"jay",
@@ -61,14 +69,14 @@ module.exports = {
     "fun":function tj(){console.log("log")}
 }
 
-//ES5写法导出带有构造方法的对象  引用该模块的代码需要使用new初始化
+//ES5写法导出带有构造方法的对象  引用该模块的代码需要使用new初始化(未实例化的对象,需要用户去实例化)
 module.exports = function Test(){
     this.name = "jay";
     this.fun = function tj(){console.log("log")}
 }
 
 
-//ES6 Class写法导出对象  引用该模块的代码同样需要使用new来初始化
+//Class写法导出对象  引用该模块的代码同样需要使用new来初始化(都存在构造函数 序号实例化)
 module.exports = class Test {
     constructor(){
     }
@@ -76,6 +84,19 @@ module.exports = class Test {
         console.log("This is class Test.tfun");
     }
 };
+```
+#### export (import)
+export default 为ES6新的模块系统,使用的是import导入
+```c
+//导出模块,常量,函数,文件等等
+export default {
+  tfun(){
+    console.log("ES6 export default")
+  }
+}
+//导入外部模块,常量,函数,文件等等
+import {XX} form xx
+XX.tfun();
 ```
 
 ### 使用node-gyp编译使用N-API的cpp代码.

@@ -9,7 +9,7 @@ which "rsync" > /dev/null
 if [ $? -eq 0 ]
 then
     #echo "rsync is exist"
-    rsync -r public/* jay@39.97.103.209:/home/jay/Work/easyup.club
+    rsync -r public/* jay@8.131.241.70:/home/jay/Work/Easyup.club
 else
     echo "rsync not exist"
 fi
