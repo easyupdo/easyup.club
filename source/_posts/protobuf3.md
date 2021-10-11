@@ -630,6 +630,8 @@ repeated MapFieldEntry map_field </span>= N;</pre>
 
 ***注*** protobuf-c 编译依赖 protobuf-cpp 所以 请先编译protobuf-cpp。 protobuf-cpp中包含google/compiler/*
 
+**其他错误** protoc（protoc --version） 的版本应该跟protobuf-cpp的本版对应 如果不对应会提示
+
 ##### 编译protobuf-cpp
 1. aarch64
 
