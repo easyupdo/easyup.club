@@ -628,6 +628,8 @@ repeated MapFieldEntry map_field </span>= N;</pre>
 2. x86_64
 > $./configure --prefix=/home/dev/Tools/protobuf-c-x64/protobuf-c-1.4.0/build-x64 protobuf_LIBS=/home/dev/Tools/protobuf-cpp-x64/protobuf-3.5.1/build-x64/lib/libprotobuf.so protobuf_CFLAGS='-L/home/dev/Tools/protobuf-cpp-x64/protobuf-3.5.1/build-x64/lib/ -I/home/dev/Tools/protobuf-cpp-x64/protobuf-3.5.1/build-x64/include'
 
+***注*** protobuf-c 编译依赖 protobuf-cpp 所以 请先编译protobuf-cpp。 protobuf-cpp中包含google/compiler/*
+
 ##### 编译protobuf-cpp
 1. aarch64
 
