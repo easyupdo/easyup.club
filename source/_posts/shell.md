@@ -179,7 +179,7 @@ else
         exit 0
         ;;
       --name=*)
-        docker_image_name_kaldi= $(expr "X$arg" : '[^=]*=\(.*\)')
+        docker_image_name_kaldi=$(expr "X$arg" : '[^=]*=\(.*\)')
         echo $docker_image_name_kaldi
         ;;
       --tag=*)

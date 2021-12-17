@@ -42,10 +42,10 @@ egs. ros2 topic echo /chatter
   $ros2 service call <service_name> <service_type> <arguments> //发送服务请求
 
   //egs ROS2 调试
-  $ros2 service call /Service_ICVOS_SM_Perceive icvos_msgs/srv/Icvossrvs "{header: {stamp: {sec: 0, nanosec: 1}, frame_id: hid}, msg_type: MSG_TYPE, msg_data: MSG_DATA}"
+  $ros2 service call /Service_XXX_SM_Perceive XXX_msgs/srv/XXXsrvs "{header: {stamp: {sec: 0, nanosec: 1}, frame_id: hid}, msg_type: MSG_TYPE, msg_data: MSG_DATA}"
 
-  //调试IcvossrvsArray
-  $ros2 service call /Service_ICVOS_SM_Perceive icvos_msgs_array/srv/IcvossrvsArray "{header: {stamp: {sec: 0, nanosec: 1}, frame_id: hid}, msg_type: icvos.Header, msg_data: MSG_DATA}"
+  //调试XXXsrvsArray
+  $ros2 service call /Service_XXX_SM_Perceive XXX_msgs_array/srv/XXXsrvsArray "{header: {stamp: {sec: 0, nanosec: 1}, frame_id: hid}, msg_type: XXX.Header, msg_data: MSG_DATA}"
 
 ```
 4. ##### ros2 param [参考](https://www.guyuehome.com/10864)
@@ -144,19 +144,19 @@ tms.num
 
 
 
-##### icvos 消息
+##### XXX 消息
 
-- icvosmsgs.msg
+- XXXmsgs.msg
 ```c
 std_msgs/Header header
 string msg_type
 string msg_data
 ```
 
-- icvosmsgsarray.msg
+- XXXmsgsarray.msg
 ```c
 std_msgs/Header header
-icvos_msgs/msg/Icvosmsgs[] msgs //这个需要系统先有icvos_msgs/msg/Icvosmsgs
+XXX_msgs/msg/XXXmsgs[] msgs //这个需要系统先有XXX_msgs/msg/XXXmsgs
 
 //也就是说 依赖的消息要先编译好加载到系统里去
 ```
@@ -172,28 +172,28 @@ terminate called after throwing an instance of 'rclcpp::exceptions::RCLInvalidAr
 
 ```c
 
-  icvos_msgs_array::srv::IcvossrvsArray::Response res;
+  XXX_msgs_array::srv::XXXsrvsArray::Response res;
 
-  auto message = icvos_msgs::msg::Icvosmsgs();
+  auto message = XXX_msgs::msg::XXXmsgs();
 
   uint64_t t = std::chrono::system_clock::now().time_since_epoch().count();
   message.header.stamp.sec = t / uint64_t(1e9);
   message.header.stamp.nanosec = t % uint64_t(1e9);
   message.msg_type="Jay_ICOVS_TYPE";
-  message.msg_data = "Jay_ICVOS_DATA";
+  message.msg_data = "Jay_XXX_DATA";
 
-  std::vector<icvos_msgs::msg::Icvosmsgs> ivec_msg = {message};
+  std::vector<XXX_msgs::msg::XXXmsgs> ivec_msg = {message};
 
   res.msgs = ivec_msg;       //我们可以使用赋值的方式初始
 
   res.msgs[0].msg_data = "server 2 client data";
 
-  res.msgs[0].msg_type = "icvos.VehicleReport";
+  res.msgs[0].msg_type = "XXX.VehicleReport";
 
 ```
 
 
--DICVOS_AP_PATH=/share/ICVOS-CORE/core
+-DXXX_AP_PATH=/share/XXX-CORE/core
 
 
 ##### core/develop_jay[ros2]
@@ -202,29 +202,29 @@ terminate called after throwing an instance of 'rclcpp::exceptions::RCLInvalidAr
 
   - 工程依赖:
 
-data_stream_framework 依赖ros2_icovs_msg/icvos_msgs, ros2_icvos_msg/icvos_msgs_array, icvos_api,
+data_stream_framework 依赖ros2_XXX_msg/XXX_msgs, ros2_XXX_msg/XXX_msgs_array, XXX_api,
 构建控制脚本为.cmake/ros2build.cmake。//构建过程中需要的依赖可以再该脚本中增加/修改。典型依赖是protobuf_util.so
-再依赖工程下有build_alone.sh构建脚本，构建需要修改-DICVOS_AP_PATH=/share/ICVOS-CORE/core变量
+再依赖工程下有build_alone.sh构建脚本，构建需要修改-DXXX_AP_PATH=/share/XXX-CORE/core变量
 
   1. 构建ro2 msgs
 
-其中ros2_icovs_msg/icovs_msgs_array 依赖 ros2_icvos_msg/icvos_msgs工程，用户需依次构建[构建指令:colcon build]，每个工程构建完并source/install/setup.bash将自定义消息加载到ros2系统，
+其中ros2_XXX_msg/XXX_msgs_array 依赖 ros2_XXX_msg/XXX_msgs工程，用户需依次构建[构建指令:colcon build]，每个工程构建完并source/install/setup.bash将自定义消息加载到ros2系统，
 
   2.  查询ros2 msg加载成功
 
-$ros2 msg list  //出现icvos_msg/xx/xx   和  icvos_msg_array/xx/xx 即表示成功
+$ros2 msg list  //出现XXX_msg/xx/xx   和  XXX_msg_array/xx/xx 即表示成功
 
-  3. 构建icvos_api
+  3. 构建XXX_api
 
-  使用工程下build_alone.sh //注意修改-DICVOS_AP_PATH=/share/ICVOS-CORE/core变量
+  使用工程下build_alone.sh //注意修改-DXXX_AP_PATH=/share/XXX-CORE/core变量
 
   4. 构建data_stream_framework
 
-  使用工程下build_alone.sh //注意修改-DICVOS_AP_PATH=/share/ICVOS-CORE/core变量
+  使用工程下build_alone.sh //注意修改-DXXX_AP_PATH=/share/XXX-CORE/core变量
 
 - 构建环境:
 
-  docker image:172.16.8.120/icvos/icvos0.8:v1.0.9
+  docker image:172.16.8.120/XXX/XXX0.8:v1.0.9
 
 - 构建平台:
 
@@ -246,13 +246,13 @@ $ros2 msg list  //出现icvos_msg/xx/xx   和  icvos_msg_array/xx/xx 即表示�
 
 ##### 功能层软件构建方法
 
-1. copy icvos_api/pacakge.xml YOUP_PORJECT_DIR
+1. copy XXX_api/pacakge.xml YOUP_PORJECT_DIR
 
 2. 修改<name>XXX<name>中XXX=CMakeLists.txt中project(NAME)NAME.
 
-3. copy icvos_api/build_alone.sh YOU_PROJECT_DIR
+3. copy XXX_api/build_alone.sh YOU_PROJECT_DIR
 
-4. 修改build_alone.sh中-DICVOS_AP_PATH=/YOU_PROJECT_DIR/core
+4. 修改build_alone.sh中-DXXX_AP_PATH=/YOU_PROJECT_DIR/core
 
 5. bash build_alone.sh //即可构建功能层软件,构建成功会在Debug下生成目标文件。
 
@@ -261,7 +261,7 @@ $ros2 msg list  //出现icvos_msg/xx/xx   和  icvos_msg_array/xx/xx 即表示�
 #### 可能的错误
 
 1. 找不到protobuf_util头文件
-在ros2build.cmake中有指定protobuf_util的头文件和lib，用户需要指定该路径，两种方法1. 你可以指定已经构建好的protobuf-util[x64]; 2. 你可以使用common/develop_jay直接在172.16.8.120/icvos/icvos0.8:v1.0.9下构建后指定该路径
+在ros2build.cmake中有指定protobuf_util的头文件和lib，用户需要指定该路径，两种方法1. 你可以指定已经构建好的protobuf-util[x64]; 2. 你可以使用common/develop_jay直接在172.16.8.120/XXX/XXX0.8:v1.0.9下构建后指定该路径
 
 2. 找不到jsoncpp头文件
  apt-get install libjsoncpp-dev
@@ -272,15 +272,15 @@ $ros2 msg list  //出现icvos_msg/xx/xx   和  icvos_msg_array/xx/xx 即表示�
  #protobuf_utils
 list(APPEND protobuf_utils_INCLUDE_DIR
 
-  /share/ICVOS-COMMON/common/protobuf_utils/protobuf_utils_cpp/include
-  /share/ICVOS-COMMON/common/protobuf_utils/protobuf_utils_cpp/pb_src
+  /share/XXX-COMMON/common/protobuf_utils/protobuf_utils_cpp/include
+  /share/XXX-COMMON/common/protobuf_utils/protobuf_utils_cpp/pb_src
   
   
 )
 
 list(APPEND protobuf_utils_LIBRARIES
 
-  /share/ICVOS-COMMON/common/protobuf_utils/protobuf_utils_cpp/Debug/lib/libprotobuf_utils.so
+  /share/XXX-COMMON/common/protobuf_utils/protobuf_utils_cpp/Debug/lib/libprotobuf_utils.so
   
 
 )
