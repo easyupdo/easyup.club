@@ -2,6 +2,7 @@
 title: shell
 date: 2020-07-22 15:36:31
 tags: shell
+published: false
 ---
 
 ### shell
